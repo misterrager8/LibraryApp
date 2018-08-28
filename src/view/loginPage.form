@@ -107,6 +107,7 @@
               </Properties>
               <Events>
                 <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="userField5FocusGained"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="userField5ActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JPasswordField" name="passField5">

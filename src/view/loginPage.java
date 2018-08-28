@@ -67,6 +67,11 @@ public class loginPage extends javax.swing.JFrame {
                 userField5FocusGained(evt);
             }
         });
+        userField5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userField5ActionPerformed(evt);
+            }
+        });
 
         passField5.setOpaque(true);
         passField5.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -407,8 +412,13 @@ public class loginPage extends javax.swing.JFrame {
 
     private void userField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userField6ActionPerformed
         // TODO add your handling code here:
-        login("users");
+        login("admins");
     }//GEN-LAST:event_userField6ActionPerformed
+
+    private void userField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userField5ActionPerformed
+        // TODO add your handling code here:
+        login("users");
+    }//GEN-LAST:event_userField5ActionPerformed
 
     /**
      * @param args the command line arguments

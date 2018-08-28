@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,6 +20,15 @@ import java.sql.SQLException;
 public class book {
     String title, author, genre, status;
     private final String url = "jdbc:sqlite:test.db";
+    InputStream cover;
+
+    public InputStream getCover() {
+        return cover;
+    }
+
+    public void setCover(InputStream cover) {
+        this.cover = cover;
+    }
 
     public book(String title, String author, String genre, String status) {
         this.title = title;
@@ -90,6 +101,7 @@ public class book {
                 this.author = rs.getString("author");
                 this.genre = rs.getString("genre");
                 this.status = rs.getString("status");
+                this.cover = rs.getBinaryStream("cover");
             }
         } catch (SQLException e) {
             System.out.println(e);
