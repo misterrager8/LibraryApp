@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view.user;
+package view.admin;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -23,7 +23,7 @@ import model.book;
  *
  * @author chemlleijoseph
  */
-public class bookInfoPage extends javax.swing.JFrame {
+public class adminBookInfo extends javax.swing.JFrame {
 
     book model = new book();
 
@@ -34,30 +34,11 @@ public class bookInfoPage extends javax.swing.JFrame {
      *
      * @param title
      */
-    public bookInfoPage(String title) throws IOException {
+    public adminBookInfo(String title) throws IOException {
         model.setTitle(title);
         model.findBook();
 
         initComponents();
-
-        switch (model.getStatus()) {
-            case "Available":
-                cartButton.setEnabled(true);
-                reserveButton.setEnabled(false);
-                break;
-            case "Checked Out":
-                cartButton.setEnabled(false);
-                reserveButton.setEnabled(true);
-                break;
-            case "Reserved":
-                cartButton.setEnabled(false);
-                reserveButton.setEnabled(true);
-                break;
-            case "In Process":
-                cartButton.setEnabled(false);
-                reserveButton.setEnabled(true);
-                break;
-        }
 
         if (model.getCover() != null) {
             BufferedImage imag = resize(ImageIO.read(model.getCover()), 225, 175);
@@ -81,9 +62,7 @@ public class bookInfoPage extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         exitButton = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         cartButton = new javax.swing.JLabel();
-        reserveButton = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -97,7 +76,7 @@ public class bookInfoPage extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
 
-        jPanel1.setBackground(new java.awt.Color(176, 216, 251));
+        jPanel1.setBackground(new java.awt.Color(237, 151, 157));
 
         exitButton.setText("X");
         exitButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -106,12 +85,9 @@ public class bookInfoPage extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setForeground(new java.awt.Color(0, 153, 0));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
         cartButton.setBackground(new java.awt.Color(255, 255, 255));
         cartButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        cartButton.setText("Add To Cart");
+        cartButton.setText("Edit Info");
         cartButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         cartButton.setOpaque(true);
         cartButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -129,29 +105,6 @@ public class bookInfoPage extends javax.swing.JFrame {
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 cartButtonMouseEntered(evt);
-            }
-        });
-
-        reserveButton.setBackground(new java.awt.Color(255, 255, 255));
-        reserveButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        reserveButton.setText("Reserve");
-        reserveButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        reserveButton.setOpaque(true);
-        reserveButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                reserveButtonMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                reserveButtonMouseReleased(evt);
-            }
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reserveButtonMouseClicked(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                reserveButtonMouseExited(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                reserveButtonMouseEntered(evt);
             }
         });
 
@@ -206,11 +159,7 @@ public class bookInfoPage extends javax.swing.JFrame {
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(cartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(reserveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(cartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(76, 76, 76)))
                         .addGap(0, 25, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -244,14 +193,8 @@ public class bookInfoPage extends javax.swing.JFrame {
                     .addComponent(jLabel9))
                 .addGap(18, 18, 18)
                 .addComponent(cartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(reserveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45))
+                .addGap(107, 107, 107))
         );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cartButton, reserveButton});
 
         if (("Available").equals(model.getStatus())) {
             jLabel4.setForeground(Color.GREEN);
@@ -291,14 +234,6 @@ public class bookInfoPage extends javax.swing.JFrame {
 
     private void cartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartButtonMouseClicked
         // TODO add your handling code here:
-        jLabel1.setText("Added To Cart");
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                jLabel1.setText("");
-            }
-        }, 2000);
     }//GEN-LAST:event_cartButtonMouseClicked
 
     private void cartButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartButtonMouseExited
@@ -310,38 +245,6 @@ public class bookInfoPage extends javax.swing.JFrame {
         // TODO add your handling code here:
         changeColor(cartButton, 155, 155, 155);
     }//GEN-LAST:event_cartButtonMouseEntered
-
-    private void reserveButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMousePressed
-        // TODO add your handling code here:
-        changeColor(reserveButton, 155, 155, 155);
-    }//GEN-LAST:event_reserveButtonMousePressed
-
-    private void reserveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMouseReleased
-        // TODO add your handling code here:
-        changeColor(reserveButton, 255, 255, 255);
-    }//GEN-LAST:event_reserveButtonMouseReleased
-
-    private void reserveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMouseClicked
-        // TODO add your handling code here:
-        jLabel1.setText("Added To Wait List");
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                jLabel1.setText("");
-            }
-        }, 2000);
-    }//GEN-LAST:event_reserveButtonMouseClicked
-
-    private void reserveButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMouseExited
-        // TODO add your handling code here:
-        changeColor(reserveButton, 255, 255, 255);
-    }//GEN-LAST:event_reserveButtonMouseExited
-
-    private void reserveButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMouseEntered
-        // TODO add your handling code here:
-        changeColor(reserveButton, 155, 155, 155);
-    }//GEN-LAST:event_reserveButtonMouseEntered
 
     /**
      * @param args the command line arguments
@@ -360,14 +263,16 @@ public class bookInfoPage extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(bookInfoPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(adminBookInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(bookInfoPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(adminBookInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(bookInfoPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(adminBookInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(bookInfoPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(adminBookInfo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
@@ -375,9 +280,9 @@ public class bookInfoPage extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new bookInfoPage("").setVisible(true);
+                    new adminBookInfo("").setVisible(true);
                 } catch (IOException ex) {
-                    Logger.getLogger(bookInfoPage.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(adminBookInfo.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -386,7 +291,6 @@ public class bookInfoPage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel cartButton;
     private javax.swing.JLabel exitButton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -397,7 +301,6 @@ public class bookInfoPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JLabel reserveButton;
     // End of variables declaration//GEN-END:variables
 
     public void changeColor(JLabel label, int r, int g, int b) {

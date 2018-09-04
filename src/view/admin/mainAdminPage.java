@@ -6,11 +6,16 @@
 package view.admin;
 
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -18,6 +23,8 @@ import javax.swing.table.DefaultTableModel;
 import model.admin;
 import model.book;
 import view.loginPage;
+import view.user.bookInfoPage;
+import view.user.mainPage;
 
 /**
  *
@@ -33,11 +40,26 @@ public class mainAdminPage extends javax.swing.JFrame {
      *
      * @param uname
      */
-    public mainAdminPage(String uname) {
+    public mainAdminPage(String uname) throws SQLException {
         model2.setUser(uname);
         model2.findAdmin();
         initComponents();
         welcomeLabel.setText("Welcome, " + model2.getfName() + "!");
+
+        bookTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    String title = bookTable.getValueAt(bookTable.getSelectedRow(), 0).toString();
+                    try {
+                        new adminBookInfo(title).setVisible(true);
+                    } catch (IOException ex) {
+                        Logger.getLogger(mainPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+
+        });
     }
 
     /**
@@ -69,7 +91,6 @@ public class mainAdminPage extends javax.swing.JFrame {
         genreLabel = new javax.swing.JLabel();
         authorLabel = new javax.swing.JLabel();
         statusLabel = new javax.swing.JLabel();
-        clearButton = new javax.swing.JButton();
         statusField = new javax.swing.JComboBox<>();
         genreField = new javax.swing.JComboBox<>();
         submitButton23 = new javax.swing.JLabel();
@@ -132,7 +153,15 @@ public class mainAdminPage extends javax.swing.JFrame {
             new String [] {
                 "Title", "Author", "Genre", "Status"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(bookTable);
 
         submitButton.setBackground(new java.awt.Color(255, 255, 255));
@@ -213,16 +242,9 @@ public class mainAdminPage extends javax.swing.JFrame {
 
         statusLabel.setText("Status");
 
-        clearButton.setText("Clear All");
-        clearButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearButtonActionPerformed(evt);
-            }
-        });
+        statusField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any Status", "Available", "Checked Out", "Reserved", "In Process" }));
 
-        statusField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Please Select", "Available", "Checked Out", "Reserved", "In Process" }));
-
-        genreField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Genre", "Fantasy", "Horror", "Adventure", "Science Fiction", "Romance", "Mystery", "Comics / Graphic Novels", "Biography / Autobiography", "Self - Help", "Reference / Textbooks", " " }));
+        genreField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any Genre", "Fantasy", "Horror", "Adventure", "Science Fiction", "Romance", "Mystery", "Comics / Graphic Novels", "Biography / Autobiography", "Self - Help", "Reference / Textbooks", " " }));
 
         submitButton23.setBackground(new java.awt.Color(255, 255, 255));
         submitButton23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -261,12 +283,11 @@ public class mainAdminPage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(authorField)
-                    .addComponent(clearButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statusField, 0, 1, Short.MAX_VALUE)
                     .addComponent(genreField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(titleField)
                     .addComponent(submitButton23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(290, Short.MAX_VALUE))
+                .addContainerGap(383, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -289,9 +310,7 @@ public class mainAdminPage extends javax.swing.JFrame {
                     .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(submitButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
-                .addComponent(clearButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Manage Books", jPanel4);
@@ -412,11 +431,6 @@ public class mainAdminPage extends javax.swing.JFrame {
         onFocus(authorField);
     }//GEN-LAST:event_authorFieldFocusGained
 
-    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
-        // TODO add your handling code here:
-        clearAll();
-    }//GEN-LAST:event_clearButtonActionPerformed
-
     private void submitButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButtonMousePressed
         // TODO add your handling code here:
         changeColor(submitButton, 155, 155, 155);
@@ -430,7 +444,11 @@ public class mainAdminPage extends javax.swing.JFrame {
     private void submitButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButtonMouseClicked
         // TODO add your handling code here:
         clearTable();
-        findBooks();
+        if (genreSelect.getSelectedIndex() == 0 && statusSelect.getSelectedIndex() == 0) {
+            findAllBooks();
+        } else {
+            findBooks();
+        }
     }//GEN-LAST:event_submitButtonMouseClicked
 
     private void submitButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButtonMouseExited
@@ -490,7 +508,7 @@ public class mainAdminPage extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -509,7 +527,11 @@ public class mainAdminPage extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new mainAdminPage("").setVisible(true);
+                try {
+                    new mainAdminPage("").setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(mainAdminPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -519,7 +541,6 @@ public class mainAdminPage extends javax.swing.JFrame {
     private javax.swing.JLabel authorLabel;
     private javax.swing.JTable bookTable;
     private javax.swing.JPanel catalogTab;
-    private javax.swing.JButton clearButton;
     private javax.swing.JLabel exitButton;
     private javax.swing.JComboBox<String> genreField;
     private javax.swing.JLabel genreLabel;
@@ -560,43 +581,25 @@ public class mainAdminPage extends javax.swing.JFrame {
     public void findBooks() {
 
         String url = "jdbc:sqlite:test.db";
-        String sql = "";
 
         DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
-        if (genreSelect.getSelectedIndex() == 0 && statusSelect.getSelectedIndex() == 0) {
-            sql += "select * from books";
-            try {
-                Connection conn = DriverManager.getConnection(url, "cj", "123");
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next()) {
-                    String d = rs.getString("title");
-                    String e = rs.getString("author");
-                    String f = rs.getString("genre");
-                    String g = rs.getString("status");
-                    model.addRow(new Object[]{d, e, f, g});
-                }
-            } catch (SQLException e) {
-                System.out.println(e);
+        String sql = "select * from books where genre = ? OR status = ?";
+
+        try {
+            Connection conn = DriverManager.getConnection(url, "cj", "123");
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, String.valueOf(genreSelect.getSelectedItem()));
+            stmt.setString(2, String.valueOf(statusSelect.getSelectedItem()));
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String d = rs.getString("title");
+                String e = rs.getString("author");
+                String f = rs.getString("genre");
+                String g = rs.getString("status");
+                model.addRow(new Object[]{d, e, f, g});
             }
-        } else {
-            sql += "select * from books where genre = ? AND status = ?";
-            try {
-                Connection conn = DriverManager.getConnection(url, "cj", "123");
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                stmt.setString(1, String.valueOf(genreSelect.getSelectedItem()));
-                stmt.setString(2, String.valueOf(statusSelect.getSelectedItem()));
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next()) {
-                    String d = rs.getString("title");
-                    String e = rs.getString("author");
-                    String f = rs.getString("genre");
-                    String g = rs.getString("status");
-                    model.addRow(new Object[]{d, e, f, g});
-                }
-            } catch (SQLException e) {
-                System.out.println(e);
-            }
+        } catch (SQLException e) {
+            System.out.println(e);
         }
 
     }
@@ -604,6 +607,30 @@ public class mainAdminPage extends javax.swing.JFrame {
     public void clearTable() {
         DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
         model.setRowCount(0);
+    }
+
+    public void findAllBooks() {
+
+        String url = "jdbc:sqlite:test.db";
+
+        DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
+        String sql = "select * from books";
+
+        try {
+            Connection conn = DriverManager.getConnection(url, "cj", "123");
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String d = rs.getString("title");
+                String e = rs.getString("author");
+                String f = rs.getString("genre");
+                String g = rs.getString("status");
+                model.addRow(new Object[]{d, e, f, g});
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
     }
 
 }

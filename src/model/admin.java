@@ -16,6 +16,7 @@ import java.sql.SQLException;
  * @author chemlleijoseph
  */
 public class admin {
+
     private String fName, lName, user, pass;
     private final String url = "jdbc:sqlite:test.db";
 
@@ -60,7 +61,7 @@ public class admin {
     public void setPass(String pass) {
         this.pass = pass;
     }
-    
+
     public void addAdmin() {
 
         try {
@@ -74,16 +75,16 @@ public class admin {
         } catch (SQLException e) {
             System.out.println(e);
         }
-        
+
     }
-    
-    public void findAdmin() {
-        
+
+    public void findAdmin() throws SQLException {
+        Connection conn = DriverManager.getConnection(url);
+
         try {
-            Connection conn = DriverManager.getConnection(url);
             PreparedStatement ps = conn.prepareStatement("select * from admins where username = ?");
             ps.setString(1, user);
-            
+
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 this.fName = rs.getString("firstName");
@@ -91,7 +92,9 @@ public class admin {
             }
         } catch (SQLException e) {
             System.out.println(e);
+        } finally {
+            conn.close();
         }
-        
+
     }
 }

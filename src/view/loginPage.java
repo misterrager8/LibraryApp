@@ -7,6 +7,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import view.admin.mainAdminPage;
 import view.user.mainPage;
@@ -311,8 +313,12 @@ public class loginPage extends javax.swing.JFrame {
     }//GEN-LAST:event_signUpButton5MousePressed
 
     private void submitButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton5MouseClicked
-        // TODO add your handling code here:
-        login("users");
+        try {
+            // TODO add your handling code here:
+            login("users");
+        } catch (SQLException ex) {
+            Logger.getLogger(loginPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_submitButton5MouseClicked
 
     private void submitButton5MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton5MouseReleased
@@ -331,8 +337,12 @@ public class loginPage extends javax.swing.JFrame {
     }//GEN-LAST:event_exitButtonMouseClicked
 
     private void passField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passField5ActionPerformed
-        // TODO add your handling code here:
-        login("users");
+        try {
+            // TODO add your handling code here:
+            login("users");
+        } catch (SQLException ex) {
+            Logger.getLogger(loginPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_passField5ActionPerformed
 
     private void passField5FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_passField5FocusGained
@@ -356,8 +366,12 @@ public class loginPage extends javax.swing.JFrame {
     }//GEN-LAST:event_passField6passFieldFocusGained
 
     private void passField6passFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passField6passFieldActionPerformed
-        // TODO add your handling code here:
-        login("admins");
+        try {
+            // TODO add your handling code here:
+            login("admins");
+        } catch (SQLException ex) {
+            Logger.getLogger(loginPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_passField6passFieldActionPerformed
 
     private void exitButton6exitButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exitButton6exitButtonMouseClicked
@@ -366,8 +380,12 @@ public class loginPage extends javax.swing.JFrame {
     }//GEN-LAST:event_exitButton6exitButtonMouseClicked
 
     private void submitButton6submitButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton6submitButtonMousePressed
-        // TODO add your handling code here:
-        login("admins");
+        try {
+            // TODO add your handling code here:
+            login("admins");
+        } catch (SQLException ex) {
+            Logger.getLogger(loginPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_submitButton6submitButtonMousePressed
 
     private void submitButton6submitButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton6submitButtonMouseReleased
@@ -376,8 +394,12 @@ public class loginPage extends javax.swing.JFrame {
     }//GEN-LAST:event_submitButton6submitButtonMouseReleased
 
     private void submitButton6submitButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton6submitButtonMouseClicked
-        // TODO add your handling code here:
-        login("admins");
+        try {
+            // TODO add your handling code here:
+            login("admins");
+        } catch (SQLException ex) {
+            Logger.getLogger(loginPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_submitButton6submitButtonMouseClicked
 
     private void submitButton5MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton5MouseEntered
@@ -411,13 +433,21 @@ public class loginPage extends javax.swing.JFrame {
     }//GEN-LAST:event_submitButton6MouseExited
 
     private void userField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userField6ActionPerformed
-        // TODO add your handling code here:
-        login("admins");
+        try {
+            // TODO add your handling code here:
+            login("admins");
+        } catch (SQLException ex) {
+            Logger.getLogger(loginPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_userField6ActionPerformed
 
     private void userField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userField5ActionPerformed
-        // TODO add your handling code here:
-        login("users");
+        try {
+            // TODO add your handling code here:
+            login("users");
+        } catch (SQLException ex) {
+            Logger.getLogger(loginPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_userField5ActionPerformed
 
     /**
@@ -474,11 +504,11 @@ public class loginPage extends javax.swing.JFrame {
     private javax.swing.JLabel usernameLabel6;
     // End of variables declaration//GEN-END:variables
 
-    public void login(String type) {
+    public void login(String type) throws SQLException {
         String url = "jdbc:sqlite:test.db";
+            Connection conn = DriverManager.getConnection(url);
 
         try {
-            Connection conn = DriverManager.getConnection(url);
             PreparedStatement ps = conn.prepareStatement("select * from " + type + " where username = ? AND password = ?");
 
             if (type.equals("admins")) {
@@ -504,6 +534,8 @@ public class loginPage extends javax.swing.JFrame {
 
         } catch (SQLException e) {
             System.out.println(e);
+        }finally{
+            conn.close();
         }
     }
 

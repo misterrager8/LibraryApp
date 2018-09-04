@@ -3,6 +3,7 @@ package view.user;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import model.user;
 import view.loginPage;
@@ -28,6 +30,16 @@ public class mainPage extends javax.swing.JFrame {
 
     user model = new user();
 
+    public JTable getBookTable() {
+        return bookTable;
+    }
+
+    public void setBookTable(JTable bookTable) {
+        this.bookTable = bookTable;
+    }
+
+    
+    
     /**
      * Creates new form mainPage
      *
@@ -45,7 +57,11 @@ public class mainPage extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     String title = bookTable.getValueAt(bookTable.getSelectedRow(), 0).toString();
-                    new bookInfoPage(title).setVisible(true);
+                    try {
+                        new bookInfoPage(title).setVisible(true);
+                    } catch (IOException ex) {
+                        Logger.getLogger(mainPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
 
@@ -149,7 +165,7 @@ public class mainPage extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        bookTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        bookTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         jScrollPane1.setViewportView(bookTable);
 
         submitButton.setBackground(new java.awt.Color(255, 255, 255));
@@ -395,7 +411,7 @@ public class mainPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable bookTable;
+    public javax.swing.JTable bookTable;
     private javax.swing.JPanel catalogTab;
     private javax.swing.JPanel checkOutTab;
     private javax.swing.JLabel exitButton;
