@@ -1,19 +1,26 @@
 package view.user;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import model.book;
 import model.user;
 import view.loginPage;
 
@@ -29,6 +36,8 @@ import view.loginPage;
 public class mainPage extends javax.swing.JFrame {
 
     user model = new user();
+    ArrayList<book> bookList = new ArrayList<book>();
+    int xMouse, yMouse;
 
     public JTable getBookTable() {
         return bookTable;
@@ -38,14 +47,12 @@ public class mainPage extends javax.swing.JFrame {
         this.bookTable = bookTable;
     }
 
-    
-    
     /**
      * Creates new form mainPage
      *
      * @param uname
      */
-    public mainPage(String uname) throws SQLException {
+    public mainPage(String uname) throws IOException {
 
         model.setUser(uname);
         model.findUser();
@@ -55,12 +62,25 @@ public class mainPage extends javax.swing.JFrame {
         bookTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
+                if (e.getClickCount() == 1) {
                     String title = bookTable.getValueAt(bookTable.getSelectedRow(), 0).toString();
-                    try {
-                        new bookInfoPage(title).setVisible(true);
-                    } catch (IOException ex) {
-                        Logger.getLogger(mainPage.class.getName()).log(Level.SEVERE, null, ex);
+                    book model = bookList.get(bookTable.getSelectedRow());
+                    titleLabel.setText(model.getTitle());
+                    authorLabel.setText(model.getAuthor());
+                    genreLabel.setText(model.getGenre());
+                    statusLabel.setText(model.getStatus());
+
+                    if (model.getCover() != null) {
+                        try {
+                            BufferedImage imag = resize(ImageIO.read(model.getCover()), 178, 125);
+                            Image image = imag;
+                            ImageIcon icon = new ImageIcon(image);
+                            coverPlace.setIcon(icon);
+                        } catch (IOException ex) {
+                            Logger.getLogger(mainPage.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        coverPlace.disable();
                     }
                 }
             }
@@ -91,6 +111,14 @@ public class mainPage extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         bookTable = new javax.swing.JTable();
         submitButton = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        cartButton = new javax.swing.JLabel();
+        reserveButton = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
+        authorLabel = new javax.swing.JLabel();
+        statusLabel = new javax.swing.JLabel();
+        genreLabel = new javax.swing.JLabel();
+        coverPlace = new javax.swing.JLabel();
         checkOutTab = new javax.swing.JPanel();
         logoutButton = new javax.swing.JLabel();
 
@@ -98,8 +126,18 @@ public class mainPage extends javax.swing.JFrame {
         setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(176, 216, 251));
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jPanel1MousePressed(evt);
+            }
+        });
 
         welcomeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        welcomeLabel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                welcomeLabelMouseDragged(evt);
+            }
+        });
 
         exitButton.setText("X");
         exitButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -126,7 +164,7 @@ public class mainPage extends javax.swing.JFrame {
                     .addComponent(nameLabel)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1))
-                .addContainerGap(515, Short.MAX_VALUE))
+                .addContainerGap(622, Short.MAX_VALUE))
         );
         profileTabLayout.setVerticalGroup(
             profileTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,7 +175,7 @@ public class mainPage extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(200, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Profile", profileTab);
@@ -191,35 +229,138 @@ public class mainPage extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setBackground(new java.awt.Color(176, 216, 251));
+
+        cartButton.setBackground(new java.awt.Color(255, 255, 255));
+        cartButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        cartButton.setText("Add To Cart");
+        cartButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cartButton.setOpaque(true);
+        cartButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                cartButtonMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                cartButtonMouseReleased(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cartButtonMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                cartButtonMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                cartButtonMouseEntered(evt);
+            }
+        });
+
+        reserveButton.setBackground(new java.awt.Color(255, 255, 255));
+        reserveButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        reserveButton.setText("Reserve");
+        reserveButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        reserveButton.setOpaque(true);
+        reserveButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                reserveButtonMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                reserveButtonMouseReleased(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                reserveButtonMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                reserveButtonMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                reserveButtonMouseEntered(evt);
+            }
+        });
+
+        titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        authorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        statusLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        genreLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        coverPlace.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(coverPlace, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(reserveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cartButton, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))
+                        .addContainerGap(29, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(authorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(titleLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(statusLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(genreLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(53, 53, 53)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(coverPlace, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(authorLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(genreLabel)
+                        .addGap(8, 8, 8)
+                        .addComponent(statusLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                        .addComponent(cartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reserveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(23, 23, 23))
+        );
+
         javax.swing.GroupLayout catalogTabLayout = new javax.swing.GroupLayout(catalogTab);
         catalogTab.setLayout(catalogTabLayout);
         catalogTabLayout.setHorizontalGroup(
             catalogTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(catalogTabLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(catalogTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(statusSelect, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(genreSelect, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(submitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                .addContainerGap()
+                .addGroup(catalogTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(submitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(genreSelect, 0, 324, Short.MAX_VALUE)
+                    .addComponent(statusSelect, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         catalogTabLayout.setVerticalGroup(
             catalogTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(catalogTabLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(catalogTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(catalogTabLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(catalogTabLayout.createSequentialGroup()
-                        .addGap(55, 55, 55)
                         .addComponent(genreSelect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(statusSelect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                        .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Catalog", catalogTab);
@@ -230,11 +371,11 @@ public class mainPage extends javax.swing.JFrame {
         checkOutTab.setLayout(checkOutTabLayout);
         checkOutTabLayout.setHorizontalGroup(
             checkOutTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 605, Short.MAX_VALUE)
+            .addGap(0, 712, Short.MAX_VALUE)
         );
         checkOutTabLayout.setVerticalGroup(
             checkOutTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 222, Short.MAX_VALUE)
+            .addGap(0, 266, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Check-Out", checkOutTab);
@@ -275,7 +416,6 @@ public class mainPage extends javax.swing.JFrame {
                         .addComponent(exitButton))
                     .addComponent(welcomeLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
                         .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -288,9 +428,9 @@ public class mainPage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(welcomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -298,11 +438,15 @@ public class mainPage extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -371,6 +515,70 @@ public class mainPage extends javax.swing.JFrame {
         changeColor(submitButton, 155, 155, 155);
     }//GEN-LAST:event_submitButtonMouseEntered
 
+    private void cartButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartButtonMousePressed
+        // TODO add your handling code here:
+        changeColor(cartButton, 155, 155, 155);
+    }//GEN-LAST:event_cartButtonMousePressed
+
+    private void cartButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartButtonMouseReleased
+        // TODO add your handling code here:
+        changeColor(cartButton, 255, 255, 255);
+    }//GEN-LAST:event_cartButtonMouseReleased
+
+    private void cartButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartButtonMouseClicked
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_cartButtonMouseClicked
+
+    private void cartButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartButtonMouseExited
+        // TODO add your handling code here:
+        changeColor(cartButton, 255, 255, 255);
+    }//GEN-LAST:event_cartButtonMouseExited
+
+    private void cartButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartButtonMouseEntered
+        // TODO add your handling code here:
+        changeColor(cartButton, 155, 155, 155);
+    }//GEN-LAST:event_cartButtonMouseEntered
+
+    private void reserveButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMousePressed
+        // TODO add your handling code here:
+        changeColor(reserveButton, 155, 155, 155);
+    }//GEN-LAST:event_reserveButtonMousePressed
+
+    private void reserveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMouseReleased
+        // TODO add your handling code here:
+        changeColor(reserveButton, 255, 255, 255);
+    }//GEN-LAST:event_reserveButtonMouseReleased
+
+    private void reserveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMouseClicked
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_reserveButtonMouseClicked
+
+    private void reserveButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMouseExited
+        // TODO add your handling code here:
+        changeColor(reserveButton, 255, 255, 255);
+    }//GEN-LAST:event_reserveButtonMouseExited
+
+    private void reserveButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reserveButtonMouseEntered
+        // TODO add your handling code here:
+        changeColor(reserveButton, 155, 155, 155);
+    }//GEN-LAST:event_reserveButtonMouseEntered
+
+    private void welcomeLabelMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_welcomeLabelMouseDragged
+        // TODO add your handling code here:
+        int x= evt.getXOnScreen();
+        int y= evt.getYOnScreen();
+        
+        this.setLocation(x - xMouse, y - yMouse);
+    }//GEN-LAST:event_welcomeLabelMouseDragged
+
+    private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
+        // TODO add your handling code here:
+        xMouse = evt.getX();
+        yMouse = evt.getY();
+    }//GEN-LAST:event_jPanel1MousePressed
+
     /**
      * @param args the command line arguments
      */
@@ -403,7 +611,7 @@ public class mainPage extends javax.swing.JFrame {
             public void run() {
                 try {
                     new mainPage("").setVisible(true);
-                } catch (SQLException ex) {
+                } catch (IOException ex) {
                     Logger.getLogger(mainPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -411,21 +619,29 @@ public class mainPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel authorLabel;
     public javax.swing.JTable bookTable;
+    private javax.swing.JLabel cartButton;
     private javax.swing.JPanel catalogTab;
     private javax.swing.JPanel checkOutTab;
+    private javax.swing.JLabel coverPlace;
     private javax.swing.JLabel exitButton;
+    private javax.swing.JLabel genreLabel;
     private javax.swing.JComboBox<String> genreSelect;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel logoutButton;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JPanel profileTab;
+    private javax.swing.JLabel reserveButton;
+    private javax.swing.JLabel statusLabel;
     private javax.swing.JComboBox<String> statusSelect;
     private javax.swing.JLabel submitButton;
+    private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel welcomeLabel;
     // End of variables declaration//GEN-END:variables
 
@@ -451,6 +667,9 @@ public class mainPage extends javax.swing.JFrame {
                     String f = rs.getString("genre");
                     String g = rs.getString("status");
                     model.addRow(new Object[]{d, e, f, g});
+                    book y = new book(d, e, f, g);
+                    y.findBook();
+                    bookList.add(y);
                 }
             } catch (SQLException e) {
                 System.out.println(e);
@@ -480,6 +699,15 @@ public class mainPage extends javax.swing.JFrame {
     public void clearTable() {
         DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
         model.setRowCount(0);
+    }
+
+    private static BufferedImage resize(BufferedImage img, int height, int width) {
+        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
     }
 
 }

@@ -1,7 +1,6 @@
 package view.user;
 
 import java.awt.Color;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JLabel;
@@ -316,12 +315,12 @@ public class signUpPage extends javax.swing.JFrame {
     }
 
     public void clearAll() {
-        
+
         fNameField.setText("");
         lNameField.setText("");
         uNameField.setText("");
         passField.setText("");
-        
+
     }
 
 }

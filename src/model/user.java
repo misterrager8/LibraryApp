@@ -88,12 +88,9 @@ public class user {
         
     }
     
-    public void findUser() throws SQLException {
-        
-        Connection conn = DriverManager.getConnection(url);
-        
+    public void findUser() {
         try {
-            
+            Connection conn = DriverManager.getConnection(url);
             PreparedStatement ps = conn.prepareStatement("select * from users where username = ?");
             ps.setString(1, user);
             
@@ -103,10 +100,9 @@ public class user {
                 this.lName = rs.getString("lastName");
                 this.dateCreated = rs.getString("dateCreated");
             }
+            conn.close();
         } catch (SQLException e) {
             System.out.println(e);
-        }finally{
-            conn.close();
         }
         
     }

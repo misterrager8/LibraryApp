@@ -2,6 +2,7 @@ package view;
 
 import view.user.signUpPage;
 import java.awt.Color;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -534,6 +535,8 @@ public class loginPage extends javax.swing.JFrame {
 
         } catch (SQLException e) {
             System.out.println(e);
+        } catch (IOException ex) {
+            Logger.getLogger(loginPage.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             conn.close();
         }

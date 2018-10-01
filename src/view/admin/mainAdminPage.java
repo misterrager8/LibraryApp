@@ -18,12 +18,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import model.admin;
 import model.book;
 import view.loginPage;
-import view.user.bookInfoPage;
 import view.user.mainPage;
 
 /**
@@ -32,6 +32,7 @@ import view.user.mainPage;
  */
 public class mainAdminPage extends javax.swing.JFrame {
 
+    final String url = "jdbc:sqlite:test.db";
     book model = new book();
     admin model2 = new admin();
 
@@ -94,6 +95,12 @@ public class mainAdminPage extends javax.swing.JFrame {
         statusField = new javax.swing.JComboBox<>();
         genreField = new javax.swing.JComboBox<>();
         submitButton23 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        genreSelect1 = new javax.swing.JComboBox<>();
+        statusSelect1 = new javax.swing.JComboBox<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        userTable = new javax.swing.JTable();
+        submitButton1 = new javax.swing.JLabel();
         logoutButton = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -125,7 +132,7 @@ public class mainAdminPage extends javax.swing.JFrame {
                 .addGroup(profileTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(nameLabel)
                     .addComponent(jLabel2))
-                .addContainerGap(515, Short.MAX_VALUE))
+                .addContainerGap(622, Short.MAX_VALUE))
         );
         profileTabLayout.setVerticalGroup(
             profileTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,7 +141,7 @@ public class mainAdminPage extends javax.swing.JFrame {
                 .addComponent(nameLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addContainerGap(221, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Profile", profileTab);
@@ -198,7 +205,7 @@ public class mainAdminPage extends javax.swing.JFrame {
                     .addComponent(genreSelect, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(submitButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
                 .addContainerGap())
         );
         catalogTabLayout.setVerticalGroup(
@@ -215,7 +222,7 @@ public class mainAdminPage extends javax.swing.JFrame {
                         .addComponent(statusSelect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Catalog", catalogTab);
@@ -287,7 +294,7 @@ public class mainAdminPage extends javax.swing.JFrame {
                     .addComponent(genreField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(titleField)
                     .addComponent(submitButton23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(383, Short.MAX_VALUE))
+                .addContainerGap(490, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -310,10 +317,91 @@ public class mainAdminPage extends javax.swing.JFrame {
                     .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(submitButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Manage Books", jPanel4);
+
+        jPanel2.setBackground(new java.awt.Color(237, 151, 157));
+
+        genreSelect1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Genre", "Fantasy", "Horror", "Adventure", "Science Fiction", "Romance", "Mystery", "Comics / Graphic Novels", "Biography / Autobiography", "Self - Help", "Reference / Textbooks", " " }));
+
+        statusSelect1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Status", "Available", "Checked Out", "Reserved", "In Process" }));
+
+        userTable.setAutoCreateRowSorter(true);
+        userTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "First Name", "Last Name", "Username", "Date Created"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(userTable);
+
+        submitButton1.setBackground(new java.awt.Color(255, 255, 255));
+        submitButton1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        submitButton1.setText("Search");
+        submitButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        submitButton1.setOpaque(true);
+        submitButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                submitButton1MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                submitButton1MouseReleased(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                submitButton1MouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                submitButton1MouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                submitButton1MouseEntered(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(statusSelect1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(genreSelect1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(submitButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addComponent(genreSelect1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(statusSelect1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(submitButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(58, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Manage Users", jPanel2);
 
         logoutButton.setBackground(new java.awt.Color(255, 255, 255));
         logoutButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -351,7 +439,6 @@ public class mainAdminPage extends javax.swing.JFrame {
                         .addComponent(exitButton))
                     .addComponent(welcomeLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
                         .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -364,9 +451,9 @@ public class mainAdminPage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(welcomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -378,7 +465,7 @@ public class mainAdminPage extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -443,7 +530,7 @@ public class mainAdminPage extends javax.swing.JFrame {
 
     private void submitButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButtonMouseClicked
         // TODO add your handling code here:
-        clearTable();
+        clearTable(bookTable);
         if (genreSelect.getSelectedIndex() == 0 && statusSelect.getSelectedIndex() == 0) {
             findAllBooks();
         } else {
@@ -497,6 +584,32 @@ public class mainAdminPage extends javax.swing.JFrame {
         changeColor(submitButton23, 155, 155, 155);
     }//GEN-LAST:event_submitButton23MouseEntered
 
+    private void submitButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton1MousePressed
+        // TODO add your handling code here:
+        changeColor(submitButton1, 155, 155, 155);
+    }//GEN-LAST:event_submitButton1MousePressed
+
+    private void submitButton1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton1MouseReleased
+        // TODO add your handling code here:
+        changeColor(submitButton1, 255, 255, 255);
+    }//GEN-LAST:event_submitButton1MouseReleased
+
+    private void submitButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton1MouseClicked
+        // TODO add your handling code here:
+        clearTable(userTable);
+        findAllUsers();
+    }//GEN-LAST:event_submitButton1MouseClicked
+
+    private void submitButton1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton1MouseExited
+        // TODO add your handling code here:
+        changeColor(submitButton1, 255, 255, 255);
+    }//GEN-LAST:event_submitButton1MouseExited
+
+    private void submitButton1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButton1MouseEntered
+        // TODO add your handling code here:
+        changeColor(submitButton1, 155, 155, 155);
+    }//GEN-LAST:event_submitButton1MouseEntered
+
     /**
      * @param args the command line arguments
      */
@@ -545,10 +658,13 @@ public class mainAdminPage extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> genreField;
     private javax.swing.JLabel genreLabel;
     private javax.swing.JComboBox<String> genreSelect;
+    private javax.swing.JComboBox<String> genreSelect1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel logoutButton;
     private javax.swing.JLabel nameLabel;
@@ -556,10 +672,13 @@ public class mainAdminPage extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> statusField;
     private javax.swing.JLabel statusLabel;
     private javax.swing.JComboBox<String> statusSelect;
+    private javax.swing.JComboBox<String> statusSelect1;
     private javax.swing.JLabel submitButton;
+    private javax.swing.JLabel submitButton1;
     private javax.swing.JLabel submitButton23;
     private javax.swing.JTextField titleField;
     private javax.swing.JLabel titleLabel;
+    private javax.swing.JTable userTable;
     private javax.swing.JLabel welcomeLabel;
     // End of variables declaration//GEN-END:variables
 
@@ -579,8 +698,6 @@ public class mainAdminPage extends javax.swing.JFrame {
     }
 
     public void findBooks() {
-
-        String url = "jdbc:sqlite:test.db";
 
         DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
         String sql = "select * from books where genre = ? OR status = ?";
@@ -604,14 +721,12 @@ public class mainAdminPage extends javax.swing.JFrame {
 
     }
 
-    public void clearTable() {
-        DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
+    public void clearTable(JTable table) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
     }
 
     public void findAllBooks() {
-
-        String url = "jdbc:sqlite:test.db";
 
         DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
         String sql = "select * from books";
@@ -625,6 +740,28 @@ public class mainAdminPage extends javax.swing.JFrame {
                 String e = rs.getString("author");
                 String f = rs.getString("genre");
                 String g = rs.getString("status");
+                model.addRow(new Object[]{d, e, f, g});
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+    }
+    
+    public void findAllUsers() {
+
+        DefaultTableModel model = (DefaultTableModel) userTable.getModel();
+        String sql = "select * from users";
+
+        try {
+            Connection conn = DriverManager.getConnection(url, "cj", "123");
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String d = rs.getString("firstName");
+                String e = rs.getString("lastName");
+                String f = rs.getString("username");
+                String g = rs.getString("dateCreated");
                 model.addRow(new Object[]{d, e, f, g});
             }
         } catch (SQLException e) {
